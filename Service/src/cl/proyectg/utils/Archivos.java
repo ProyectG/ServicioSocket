@@ -4,8 +4,41 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 
+import javaSocketObject.File;
+
+/**
+ * Utilitarios para tratar archivos.
+ * @author nkey
+ *
+ */
+
 public class Archivos {
 
+	/**
+	 * Guarda archivos con contenido que reciba el string.
+	 * @param archivo
+	 * @param ubicacion
+	 * @return
+	 */
+	
+	public File ejecucion(File tarea)
+	{
+		if("leer".equalsIgnoreCase(tarea.getTarea()))
+		{ 
+			String ubicacionArchivo = tarea.getUbicacionArchivo()+"/"+tarea.getNombreArchivo();
+			tarea.setResultadoProceso(guardarArchivo(tarea.getContenidoArchivo(),ubicacionArchivo));
+		}else if("escribir".equalsIgnoreCase(tarea.getTarea()))
+		{
+			
+		}else
+		{
+			//Nada que hacer.
+		}
+		
+		return tarea;
+	}
+	
+	
 	public String guardarArchivo(String archivo, String ubicacion)
 	{
 		BufferedWriter lapiz;
@@ -13,13 +46,14 @@ public class Archivos {
 			lapiz = new BufferedWriter(new FileWriter(ubicacion));
 			lapiz.write(archivo);
 			lapiz.close();
-			System.out.println("Pude guardar el archivo, uff, cuanta informacion.");
-			return "Archivo guardado correctamente.";
+			return "OK";
 		} catch (IOException e) {
-			System.out.println("Error al escribir el archivo"+e);
-			return "Hubo un problema al guardar el archivo";
+			return "NOK";
 		}
 	}
+	
+	
+	
 	
 	public String leerArchivo(String ubicacion)
 	{
