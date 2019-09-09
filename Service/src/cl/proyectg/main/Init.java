@@ -43,8 +43,6 @@ public class Init {
 		private int puerto;
 		private ServerSocket servicio;
 		private Socket cliente;
-		private PrintWriter out;
-		private BufferedReader in;
 		private InputStream inputStream;
 		private OutputStream outputStream;
 
@@ -64,30 +62,28 @@ public class Init {
 				while ((entrada = objectInputStream.readObject()) != null) {
 					
 					Map<String,Object> mensaje = (Map<String,Object>) entrada;
-					System.out.println("Mensaje recibido :" + mensaje.toString() + " de " + cliente.toString());
-					
-					Test test = (Test) mensaje.get("llave");
-					
-					System.out.println("Data :"+test.getMensaje());
-					System.out.println("Data :"+test.getNumero());
-					
-					test.setMensaje("Quakerman");
-					
-					objectOutputStream.writeObject(test);
+					switch((String)mensaje.get("tarea")) {
+					case "leer":
+						Archivos archivo = new Archivos();
+						javaSocketObject.File objeto = new javaSocketObject.File();
+						objeto = archivo.leerArchivo((javaSocketObject.File)mensaje.get("objeto"));
+						objectOutputStream.writeObject(mensaje.get("objeto"));
+						break;
+					case "escribir":
+						
+						break;
+					default:
+						
+					}
 					
 				}
 				
-				//out.println("Gracias por usarme, ¡saludos!.");
-
-				in.close();
-				out.close();
 				objectInputStream.close();
 				objectOutputStream.close();
 				cliente.close();
 
 			}catch(IOException e1) {
 				System.out.println("No hay mas datos");
-				//out.println("Gracias por usarme, ¡Saludos!");
 			}catch (Exception e) {
 				System.out.println("El servicio ha fallado al inicializar.");
 				e.printStackTrace();
