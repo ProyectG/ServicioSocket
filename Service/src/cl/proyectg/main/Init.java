@@ -70,7 +70,10 @@ public class Init {
 						objectOutputStream.writeObject(mensaje.get("objeto"));
 						break;
 					case "escribir":
-						
+						Archivos archivo2 = new Archivos();
+						javaSocketObject.File objeto2 = new javaSocketObject.File();
+						objeto2 = archivo2.guardarArchivo((javaSocketObject.File)mensaje.get("objeto"));
+						objectOutputStream.writeObject(mensaje.get("objeto"));
 						break;
 					default:
 						
