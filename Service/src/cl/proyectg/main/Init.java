@@ -13,6 +13,7 @@ import java.net.Socket;
 import java.util.Map;
 
 import cl.proyectg.utils.Archivos;
+import cl.proyectg.utils.Comandos;
 import javaSocketObject.Test;
 
 /**
@@ -62,20 +63,27 @@ public class Init {
 				while ((entrada = objectInputStream.readObject()) != null) {
 					
 					Map<String,Object> mensaje = (Map<String,Object>) entrada;
+					
+					Archivos archivo = new Archivos();
+					javaSocketObject.File objeto = new javaSocketObject.File();
+					Comandos cmd = new Comandos();
+					
 					switch((String)mensaje.get("tarea")) {
 					case "leer":
-						Archivos archivo = new Archivos();
-						javaSocketObject.File objeto = new javaSocketObject.File();
 						objeto = archivo.leerArchivo((javaSocketObject.File)mensaje.get("objeto"));
 						objectOutputStream.writeObject(mensaje.get("objeto"));
 						break;
 					case "escribir":
-						Archivos archivo2 = new Archivos();
-						javaSocketObject.File objeto2 = new javaSocketObject.File();
-						objeto2 = archivo2.guardarArchivo((javaSocketObject.File)mensaje.get("objeto"));
+						objeto = archivo.guardarArchivo((javaSocketObject.File)mensaje.get("objeto"));
 						objectOutputStream.writeObject(mensaje.get("objeto"));
 						break;
+					case "ejecutar":
+						String resultado = cmd.executar((String)mensaje.get("comando"));
+						objectOutputStream.writeObject(mensaje.put("resultado",resultado));
+						break;
 					default:
+						objectOutputStream.writeObject(mensaje.put("resultado","No se ejecuto, ningun proceso."));
+						break;
 						
 					}
 					
