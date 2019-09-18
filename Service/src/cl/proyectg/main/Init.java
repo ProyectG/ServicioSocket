@@ -21,11 +21,21 @@ import cl.proyectg.utils.Comandos;
 
 public class Init {
 
+	
 	private static ServerSocket servidor;
 
 	public static void main(String[] args) throws IOException {
-
-		servidor = new ServerSocket(5555);
+		
+		 int puerto = 0;
+		if(args.length>0)
+		{
+			for(String argumentos:args)
+				puerto = Integer.parseInt(args[0]);
+		}
+		else
+			puerto=5555;
+		
+		servidor = new ServerSocket(puerto);
 
 		while (true)
 			new IniciarServicio(servidor.accept()).run();
