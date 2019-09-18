@@ -1,20 +1,16 @@
 package cl.proyectg.main;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Map;
 
 import cl.proyectg.utils.Archivos;
 import cl.proyectg.utils.Comandos;
-import javaSocketObject.Test;
 
 /**
  * Servicio que permite hacer varias cosas dependiendo del mensaje la estructura esta definida como.
@@ -41,7 +37,6 @@ public class Init {
 	}
 
 	public static class IniciarServicio extends Thread {
-		private int puerto;
 		private ServerSocket servicio;
 		private Socket cliente;
 		private InputStream inputStream;
