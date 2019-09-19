@@ -2,19 +2,18 @@ package cl.proyectg.utils;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
-
-import javaSocketObject.File;
+import java.io.OutputStream;
 
 /**
- * Utilitarios para tratar archivos.
- * md5
- * tamaño
- * leer
- * escribir
+ * Utilitarios para tratar archivos. md5 tamaño leer escribir
  * 
  * @author nkey
  *
@@ -31,30 +30,78 @@ public class Archivos {
 	 */
 
 	public cl.proyectg.cliente.acciones.Archivos guardarArchivo(cl.proyectg.cliente.acciones.Archivos objeto) {
-		BufferedWriter lapiz;
-		try {
-			String ubicacion = objeto.getUbicacionArchivo() + objeto.getNombreArchivo();
-			lapiz = new BufferedWriter(new FileWriter(ubicacion));
-			lapiz.write(objeto.getContenidoArchivo());
-			lapiz.close();
-			objeto.setContenidoArchivo(null);
 
-			if (objeto.isMd5())
-				objeto.setResultadoMD5(obtenerMD5(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
+		if (objeto.getTipo() == 0) {
+			try {	
+				objeto = escribirArchivoContenido(objeto);
+				
+				if (objeto.isMd5())
+					objeto.setResultadoMD5(obtenerMD5(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
 
-			if (objeto.isTamaño())
-				objeto.setResultadoTamaño(obtenerTamaño(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
+				if (objeto.isTamaño())
+					objeto.setResultadoTamaño(obtenerTamaño(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
 
-			objeto.setResultado("OK");
-			return objeto;
-		} catch (IOException e) {
-			objeto.setContenidoArchivo(null);
+				objeto.setResultado("OK");
+				return objeto;
+			} catch (IOException e) {
+				objeto.setContenidoArchivo(null);
+				objeto.setResultado("NOK");
+				return objeto;
+			}
+		} else if (objeto.getTipo() == 1) {
+			try {
+				
+				objeto = escribirArchivoDirecto(objeto);
+				
+				if (objeto.isMd5())
+					objeto.setResultadoMD5(obtenerMD5(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
+
+				if (objeto.isTamaño())
+					objeto.setResultadoTamaño(obtenerTamaño(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
+
+				objeto.setResultado("OK");
+				return objeto;
+
+			} catch (Exception e) {
+				objeto.setArchivo(null);
+				objeto.setResultado("NOK");
+				return objeto;
+			}
+		}else
+		{
 			objeto.setResultado("NOK");
 			return objeto;
 		}
+		
+	}
+	
+	public cl.proyectg.cliente.acciones.Archivos escribirArchivoDirecto(cl.proyectg.cliente.acciones.Archivos objeto) throws IOException
+	{
+		String ubicacion = objeto.getUbicacionArchivo() + objeto.getNombreArchivo();
+		byte[] archivo = objeto.getArchivo();
+		try (FileOutputStream fos = new FileOutputStream(ubicacion)) {
+			   fos.write(archivo);
+		}catch(Exception e)
+		{
+			System.out.println("Error [["+e+"]]");
+		}
+		
+		objeto.setArchivo(null);
+		return objeto;
+	}
+	
+	public cl.proyectg.cliente.acciones.Archivos escribirArchivoContenido(cl.proyectg.cliente.acciones.Archivos objeto) throws IOException
+	{
+		String ubicacion = objeto.getUbicacionArchivo() + objeto.getNombreArchivo();
+		BufferedWriter lapiz = new BufferedWriter(new FileWriter(ubicacion));
+		lapiz.write(objeto.getContenidoArchivo());
+		lapiz.close();
+		objeto.setContenidoArchivo(null);
+		return objeto;
 	}
 
-	public cl.proyectg.cliente.acciones.Archivos leerArchivo(cl.proyectg.cliente.acciones.Archivos objeto) throws IOException {
+	public cl.proyectg.cliente.acciones.Archivos leerArchivo(cl.proyectg.cliente.acciones.Archivos objeto)
+			throws IOException {
 
 		String cadena, archivo = "";
 		FileReader file = new FileReader(objeto.getUbicacionArchivo() + objeto.getNombreArchivo());
