@@ -16,6 +16,7 @@ public class Comandos {
 			resultado = line;
 		}
 		input.close();
+		System.out.println("Resultado [["+resultado+"]]");
 		return resultado;
 	}
 

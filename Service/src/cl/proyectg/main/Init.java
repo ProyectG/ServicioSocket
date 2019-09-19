@@ -35,6 +35,7 @@ public class Init {
 		else
 			puerto=5555;
 		
+		System.out.println("Iniciando servicio en el puerto "+puerto);
 		servidor = new ServerSocket(puerto);
 
 		while (true)
@@ -70,26 +71,26 @@ public class Init {
 					Map<String,Object> mensaje = (Map<String,Object>) entrada;
 					
 					Archivos archivo = new Archivos();
-					javaSocketObject.File objeto = new javaSocketObject.File();
+					cl.proyectg.cliente.acciones.Archivos objeto = new cl.proyectg.cliente.acciones.Archivos();
 					Comandos cmd = new Comandos();
 					
 					switch((String)mensaje.get("tarea")) {
 					case "leer":
-						objeto = archivo.leerArchivo((javaSocketObject.File)mensaje.get("objeto"));
+						objeto = archivo.leerArchivo((cl.proyectg.cliente.acciones.Archivos)mensaje.get("objeto"));
 						objectOutputStream.writeObject(mensaje.get("objeto"));
 						break;
 					case "escribir":
-						objeto = archivo.guardarArchivo((javaSocketObject.File)mensaje.get("objeto"));
+						objeto = archivo.guardarArchivo((cl.proyectg.cliente.acciones.Archivos)mensaje.get("objeto"));
 						objectOutputStream.writeObject(mensaje.get("objeto"));
 						break;
 					case "ejecutar":
 						String resultado = cmd.executar((String)mensaje.get("comando"));
-						objectOutputStream.writeObject(mensaje.put("resultado",resultado));
+						mensaje.put("resultado",resultado);
+						objectOutputStream.writeObject(mensaje);
 						break;
 					default:
 						objectOutputStream.writeObject(mensaje.put("resultado","No se ejecuto, ningun proceso."));
 						break;
-						
 					}
 					
 				}

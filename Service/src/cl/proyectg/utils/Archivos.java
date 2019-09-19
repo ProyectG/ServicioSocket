@@ -30,7 +30,7 @@ public class Archivos {
 	 * @return
 	 */
 
-	public javaSocketObject.File guardarArchivo(javaSocketObject.File objeto) {
+	public cl.proyectg.cliente.acciones.Archivos guardarArchivo(cl.proyectg.cliente.acciones.Archivos objeto) {
 		BufferedWriter lapiz;
 		try {
 			String ubicacion = objeto.getUbicacionArchivo() + objeto.getNombreArchivo();
@@ -54,7 +54,7 @@ public class Archivos {
 		}
 	}
 
-	public javaSocketObject.File leerArchivo(javaSocketObject.File objeto) throws IOException {
+	public cl.proyectg.cliente.acciones.Archivos leerArchivo(cl.proyectg.cliente.acciones.Archivos objeto) throws IOException {
 
 		String cadena, archivo = "";
 		FileReader file = new FileReader(objeto.getUbicacionArchivo() + objeto.getNombreArchivo());
