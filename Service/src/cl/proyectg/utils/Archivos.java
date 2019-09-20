@@ -32,9 +32,9 @@ public class Archivos {
 	public cl.proyectg.cliente.acciones.Archivos guardarArchivo(cl.proyectg.cliente.acciones.Archivos objeto) {
 
 		if (objeto.getTipo() == 0) {
-			try {	
+			try {
 				objeto = escribirArchivoContenido(objeto);
-				
+
 				if (objeto.isMd5())
 					objeto.setResultadoMD5(obtenerMD5(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
 
@@ -50,9 +50,9 @@ public class Archivos {
 			}
 		} else if (objeto.getTipo() == 1) {
 			try {
-				
-				objeto = escribirArchivoDirecto(objeto);
-				
+
+				objeto = escribirArchivoBytes(objeto);
+
 				if (objeto.isMd5())
 					objeto.setResultadoMD5(obtenerMD5(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
 
@@ -67,31 +67,29 @@ public class Archivos {
 				objeto.setResultado("NOK");
 				return objeto;
 			}
-		}else
-		{
+		} else {
 			objeto.setResultado("NOK");
 			return objeto;
 		}
-		
+
 	}
-	
-	public cl.proyectg.cliente.acciones.Archivos escribirArchivoDirecto(cl.proyectg.cliente.acciones.Archivos objeto) throws IOException
-	{
+
+	public cl.proyectg.cliente.acciones.Archivos escribirArchivoBytes(cl.proyectg.cliente.acciones.Archivos objeto)
+			throws IOException {
 		String ubicacion = objeto.getUbicacionArchivo() + objeto.getNombreArchivo();
 		byte[] archivo = objeto.getArchivo();
 		try (FileOutputStream fos = new FileOutputStream(ubicacion)) {
-			   fos.write(archivo);
-		}catch(Exception e)
-		{
-			System.out.println("Error [["+e+"]]");
+			fos.write(archivo);
+		} catch (Exception e) {
+			System.out.println("Error [[" + e + "]]");
 		}
-		
+
 		objeto.setArchivo(null);
 		return objeto;
 	}
-	
-	public cl.proyectg.cliente.acciones.Archivos escribirArchivoContenido(cl.proyectg.cliente.acciones.Archivos objeto) throws IOException
-	{
+
+	public cl.proyectg.cliente.acciones.Archivos escribirArchivoContenido(cl.proyectg.cliente.acciones.Archivos objeto)
+			throws IOException {
 		String ubicacion = objeto.getUbicacionArchivo() + objeto.getNombreArchivo();
 		BufferedWriter lapiz = new BufferedWriter(new FileWriter(ubicacion));
 		lapiz.write(objeto.getContenidoArchivo());
@@ -103,13 +101,19 @@ public class Archivos {
 	public cl.proyectg.cliente.acciones.Archivos leerArchivo(cl.proyectg.cliente.acciones.Archivos objeto)
 			throws IOException {
 
-		String cadena, archivo = "";
-		FileReader file = new FileReader(objeto.getUbicacionArchivo() + objeto.getNombreArchivo());
-		BufferedReader lector = new BufferedReader(file);
-		while ((cadena = lector.readLine()) != null) {
-			archivo = archivo + cadena + "\n";
+		if (objeto.getTipo() == 0) {
+			String cadena, archivo = "";
+			FileReader file = new FileReader(objeto.getUbicacionArchivo() + objeto.getNombreArchivo());
+			BufferedReader lector = new BufferedReader(file);
+			while ((cadena = lector.readLine()) != null) {
+				archivo = archivo + cadena + "\n";
+			}
+			objeto.setContenidoArchivo(archivo);
+			lector.close();
+		} else if (objeto.getTipo() == 1) {
+			byte[] archivoByte = leerArchivoAbytes(objeto.getUbicacionArchivo() + objeto.getNombreArchivo());
+			objeto.setArchivo(archivoByte);
 		}
-		objeto.setContenidoArchivo(archivo);
 
 		if (objeto.isMd5())
 			objeto.setResultadoMD5(obtenerMD5(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
@@ -118,7 +122,7 @@ public class Archivos {
 			objeto.setResultadoTamaño(obtenerTamaño(objeto.getUbicacionArchivo() + objeto.getNombreArchivo()));
 
 		objeto.setResultado("OK");
-		lector.close();
+
 		return objeto;
 	}
 
@@ -148,6 +152,21 @@ public class Archivos {
 		}
 		input.close();
 		return tamaño;
+	}
+
+	private static byte[] leerArchivoAbytes(String ubicacion) {
+		File file = new File(ubicacion);
+		FileInputStream fis = null;
+		byte[] bArray = new byte[(int) file.length()];
+		try {
+			fis = new FileInputStream(file);
+			fis.read(bArray);
+			fis.close();
+
+		} catch (IOException ioExp) {
+			ioExp.printStackTrace();
+		}
+		return bArray;
 	}
 
 }

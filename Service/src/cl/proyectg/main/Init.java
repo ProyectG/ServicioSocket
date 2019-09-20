@@ -64,7 +64,6 @@ public class Init {
 				ObjectInputStream objectInputStream = new ObjectInputStream(inputStream);
 				ObjectOutputStream objectOutputStream = new ObjectOutputStream(outputStream);
 				
-				
 				Object entrada;
 				while ((entrada = objectInputStream.readObject()) != null) {
 					
@@ -92,7 +91,6 @@ public class Init {
 						objectOutputStream.writeObject(mensaje.put("resultado","No se ejecuto, ningun proceso."));
 						break;
 					}
-					
 				}
 				
 				objectInputStream.close();
